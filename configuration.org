@@ -1,0 +1,230 @@
+* melpa packages
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(setq package-archives
+      '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
+        ("MELPA Stable" . "https://stable.melpa.org/packages/")
+        ("MELPA"        . "https://melpa.org/packages/"))
+      package-archive-priorities
+      '(("MELPA Stable" . 10)
+        ("GNU ELPA"     . 5)
+        ("MELPA"        . 0)))
+  (package-initialize)
+
+  (setq package-selected-packages
+     (quote
+      (helm-projectile projectile auctex org-bullets helm telephone-line evil)))
+#+END_SRC
+* sensible defaults
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/sensible-defaults.el")
+(sensible-defaults/use-all-settings)
+(sensible-defaults/use-all-keybindings)
+#+END_SRC
+* switch buffers
+#+BEGIN_SRC emacs-lisp
+(setq mac-command-modifier 'super)
+(load "~/.emacs.d/mybuffers.el")
+(global-set-key (kbd "s-`") 'mybuffers-switch)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defun kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "s-w") 'kill-current-buffer)
+#+END_SRC
+* emacs preferences
+#+BEGIN_SRC emacs-lisp
+  ;; Wrap lines at window edge
+  (global-visual-line-mode t)
+
+  ;; wrap at 80 characters
+  ;; (add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
+  ;; (global-visual-fill-column-mode t)
+
+  ;; Set file to open at startup
+  ;; (find-file "~/Dropbox/autopilot.org")
+
+  ;; disable alarm bell
+  (setq ring-bell-function 'ignore)
+
+  ;; Disable the splash screen (to enable it agin, replace the t with 0)
+  (setq inhibit-splash-screen t)
+
+  ;; Disable the tool bar
+  (tool-bar-mode -1)
+
+  ;; Disable scroll bar
+  (scroll-bar-mode -1)
+
+  ;; remove fringes
+  ;; (fringe-mode -1)
+#+END_SRC
+
+Move backups
+#+BEGIN_SRC emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t      ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 20   ; how many of the newest versions to keep
+  kept-old-versions 5    ; and how many of the old
+  )
+#+END_SRC
+* helm
+#+BEGIN_SRC emacs-lisp
+  (require 'helm)
+  (require 'helm-config)
+
+
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+  ;; limit max number of matches displayed for speed
+  (setq helm-candidate-number-limit 100)
+  ;; ignore boring files like .o and .a
+  (setq helm-ff-skip-boring-files t)
+   ;; replace locate with spotlight on Mac
+  (setq helm-locate-command "mdfind -name %s %s")
+
+  (require 'helm-projectile)
+  (setq helm-projectile-fuzzy-match nil)
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm)
+  (helm-projectile-on)
+  ;; enable caching so projectile can be used in a large directory
+  (setq projectile-enable-caching t)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+   (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+	helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+	helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+	helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+	helm-ff-file-name-history-use-recentf t
+	helm-echo-input-in-header-line t)
+
+  ;;  (setq helm-autoresize-max-height 0)
+  ;; (setq helm-autoresize-min-height 20)
+  (helm-autoresize-mode 1)
+
+  (helm-mode 1)
+#+END_SRC
+* evil
+#+BEGIN_SRC emacs-lisp
+  ;; (add-to-list 'load-path "~/.emacs.d/evil")
+  (require 'evil)
+  (evil-mode 1)
+#+END_SRC
+* telephone line
+#+BEGIN_SRC emacs-lisp
+;; use powerline
+(require 'telephone-line-config)
+(telephone-line-evil-config)
+(setq telephone-line-lhs
+      '((evil   . (telephone-line-evil-tag-segment))
+        (accent . (telephone-line-vc-segment
+                   telephone-line-erc-modified-channels-segment
+                   telephone-line-process-segment))
+        (nil    . (telephone-line-minor-mode-segment
+                   telephone-line-buffer-segment))))
+(setq telephone-line-rhs
+      '((nil    . (telephone-line-misc-info-segment))
+        (accent . (telephone-line-major-mode-segment))
+        (evil   . (telephone-line-airline-position-segment))))
+(telephone-line-mode 1)
+#+END_SRC
+
+* org mode
+
+Pretty bullets instead of asterisks, hide leading stars
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+	    (lambda ()
+	      (org-bullets-mode t)))
+
+  (setq org-hide-leading-stars t)
+#+END_SRC
+
+downward pointing arrow instead of ellipsis
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "\u2935")
+#+END_SRC
+
+Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
+#+BEGIN_SRC emacs-lisp
+  ;; (require 'org)
+(setq org-todo-keywords
+  '((sequence "TODO(t)" "WAITING(w@/!)" "|" "DONE(d!)")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-modules
+   '(quote(org-ctags org-gnus org-habit)))
+#+END_SRC
+
+Set default file
+#+BEGIN_SRC emacs-lisp
+  (setq
+   org-archive-location '"~/reference/todo-archive.org::datetree")
+  (setq
+   org-default-notes-file '"~/Dropbox/inbox.org")
+#+END_SRC
+
+Indent lines according to outline structure
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-indented t)
+#+END_SRC
+
+Key bindings
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "\C-c l") 'org-store-link)
+  (global-set-key (kbd "\C-c a") 'org-agenda)
+  (global-set-key (kbd "\C-c c") 'org-capture)
+  (global-set-key (kbd "\C-c b") 'org-iswitchb)
+#+END_SRC
+
+* octave
+Use octave mode for all .m files
+#+BEGIN_SRC emacs-lisp
+  (setq auto-mode-alist
+        (cons '("\\.m$" . octave-mode) auto-mode-alist))
+#+END_SRC
+
+turn on abbrevs, auto-fill, font locks for octave
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'octave-mode-hook
+          (lambda ()
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
+#+END_SRC
+* ESS
+#+BEGIN_SRC emacs-lisp
+(setq ess-R-font-lock-keywords
+   '(quote
+    ((ess-R-fl-keyword:modifiers . t)
+     (ess-R-fl-keyword:fun-defs . t)
+     (ess-R-fl-keyword:keywords . t)
+     (ess-R-fl-keyword:assign-ops . t)
+     (ess-R-fl-keyword:constants . t)
+     (ess-fl-keyword:fun-calls . t)
+     (ess-fl-keyword:numbers . t)
+     (ess-fl-keyword:operators . t)
+     (ess-fl-keyword:delimiters . t)
+     (ess-fl-keyword:= . t)
+     (ess-R-fl-keyword:F&T . t)
+     (ess-R-fl-keyword:%op% . t))))
+#+END_SRC

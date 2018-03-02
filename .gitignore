@@ -1,0 +1,10 @@
+*~
+*.cache
+.DS_Store
+octave-workspace
+recentf
+SessionDesktop.el
+projectile-bookmarks.eld
+elpa
+network-security.data
+configuration.el
