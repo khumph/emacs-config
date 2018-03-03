@@ -21,29 +21,40 @@
 (sensible-defaults/use-all-settings)
 (sensible-defaults/use-all-keybindings)
 #+END_SRC
-* switch buffers
+
+* macOS-aligned key bindings
 #+BEGIN_SRC emacs-lisp
+;; make sure command key mapped to super (s)
 (setq mac-command-modifier 'super)
 (load "~/.emacs.d/mybuffers.el")
 (global-set-key (kbd "s-`") 'mybuffers-switch)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
+
+;; move to end of line with cmd-right
+(global-set-key (kbd "s-<right>") 'move-end-of-line)
+;; move to begginging of line with cmd-left
+(global-set-key (kbd "s-<left>") 'move-beginning-of-line)
+
+;; kill current buffer with cmd+w
 (defun kill-current-buffer ()
   (interactive)
   (kill-buffer (current-buffer)))
 (global-set-key (kbd "s-w") 'kill-current-buffer)
+#+END_SRC
+
+cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "s-0") 'sensible-defaults/reset-text-size)
+  (define-key global-map (kbd "s-=") 'text-scale-increase)
+  (define-key global-map (kbd "s--") 'text-scale-decrease)
 #+END_SRC
 * emacs preferences
 #+BEGIN_SRC emacs-lisp
   ;; Wrap lines at window edge
   (global-visual-line-mode t)
 
-  ;; wrap at 80 characters
-  ;; (add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
-  ;; (global-visual-fill-column-mode t)
-
-  ;; Set file to open at startup
-  ;; (find-file "~/Dropbox/autopilot.org")
+  ;; disable automatically inserting newlines
+  (auto-fill-mode -1)
+  (remove-hook 'text-mode-hook #'turn-on-auto-fill)
 
   ;; disable alarm bell
   (setq ring-bell-function 'ignore)
@@ -58,12 +69,12 @@
   (scroll-bar-mode -1)
 
   ;; remove fringes
-  ;; (fringe-mode -1)
+  (fringe-mode -1)
 #+END_SRC
 
-Move backups
+Move backups to a separate folder, automatically delete
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
   backup-by-copying t    ; Don't delink hardlinks
   version-control t      ; Use version numbers on backups
   delete-old-versions t  ; Automatically delete excess backups
@@ -227,4 +238,8 @@ turn on abbrevs, auto-fill, font locks for octave
      (ess-fl-keyword:= . t)
      (ess-R-fl-keyword:F&T . t)
      (ess-R-fl-keyword:%op% . t))))
+#+END_SRC
+* set file to open at startup
+#+BEGIN_SRC emacs-lisp
+  (find-file "~/Documents/gtd/projects.org")
 #+END_SRC
