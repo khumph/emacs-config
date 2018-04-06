@@ -10,9 +10,8 @@
         ("GNU ELPA"     . 5)
         ("MELPA"        . 0)))
   (package-initialize)
-
   (setq package-selected-packages
-     (quote (auctex org-bullets helm telephone-line evil)))
+     (quote (yasnippet-snippets yasnippet auctex org-bullets helm telephone-line evil)))
 #+END_SRC
 * sensible defaults
 #+BEGIN_SRC emacs-lisp
@@ -229,7 +228,15 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
    '(quote(org-ctags org-gnus org-habit)))
 #+END_SRC
 
-Set default file
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (ipython . t))))
+#+END_SRC
+
+Set archive and capture files
 #+BEGIN_SRC emacs-lisp
   (setq
    org-archive-location '"~/reference/todo-archive.org::datetree")
@@ -285,5 +292,5 @@ turn on abbrevs, auto-fill, font locks for octave
 #+END_SRC
 * set file to open at startup
 #+BEGIN_SRC emacs-lisp
-  (find-file "~/Documents/gtd/next-actions.org")
+  (find-file "~/Desktop/gtd/next-actions.org")
 #+END_SRC
