@@ -218,14 +218,22 @@ downward pointing arrow instead of ellipsis
 
 Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
 #+BEGIN_SRC emacs-lisp
-  ;; (require 'org)
+(setq org-tag-alist '((:startgroup . nil)
+                      ("@fusion" . ?f) ("@home" . ?h)
+                      ("@out" . ?o)
+                      (:endgroup . nil)
+                      (:startgroup . nil)
+                      ("shallow" . ?s) ("deep" . ?d)
+                      (:endgroup . nil)))
 (setq org-todo-keywords
-  '((sequence "TODO(t)" "WAITING(w@/!)" "|" "DONE(d!)")))
+  '((sequence "TODO(t)" "|" "DONE(d!)")
+    (sequence "WAITING(w@/!)")
+    (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq org-modules
-   '(quote(org-ctags org-gnus org-habit)))
+   '(quote(org-ctags org-gnus org-habit org-checklist)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -236,17 +244,23 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
      (ipython . t))))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (setq org-enforce-todo-dependencies t)
+  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
+#+END_SRC
+
 Set archive and capture files
 #+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (list "~/Dropbox/org"))
   (setq
-   org-archive-location '"~/reference/todo-archive.org::datetree")
+   org-archive-location '"~/Documents/todo-archive.org::datetree")
   (setq
-   org-default-notes-file '"~/Dropbox/inbox.org")
+   org-default-notes-file '"~Dropbox/org/inbox.org")
 #+END_SRC
 
 Indent lines according to outline structure
 #+BEGIN_SRC emacs-lisp
-(setq org-startup-indented t)
+  (setq org-startup-indented t)
 #+END_SRC
 
 Key bindings
@@ -292,5 +306,7 @@ turn on abbrevs, auto-fill, font locks for octave
 #+END_SRC
 * set file to open at startup
 #+BEGIN_SRC emacs-lisp
-  (find-file "~/Desktop/gtd/next-actions.org")
+  ;; (find-file "~/Desktop/gtd/root-commitment.org")
+
+  (add-hook 'after-init-hook 'org-agenda-list)
 #+END_SRC
