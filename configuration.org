@@ -1,4 +1,5 @@
 * melpa packages
+
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (setq package-archives
@@ -11,9 +12,11 @@
         ("MELPA"        . 0)))
   (package-initialize)
   (setq package-selected-packages
-     (quote (yasnippet-snippets yasnippet auctex org-bullets helm telephone-line evil)))
+     (quote (org-bullets helm telephone-line evil)))
 #+END_SRC
+
 * sensible defaults
+
 #+BEGIN_SRC emacs-lisp
 (load-file "~/.emacs.d/sensible-defaults.el")
 (sensible-defaults/use-all-settings)
@@ -21,28 +24,28 @@
 #+END_SRC
 
 * macOS-aligned key bindings
+
 #+BEGIN_SRC emacs-lisp
 ;; make sure command key mapped to super (s)
 (setq mac-command-modifier 'super)
-(load "~/.emacs.d/mybuffers.el")
-(global-set-key (kbd "s-`") 'mybuffers-switch)
-
+;; (load "~/.emacs.d/mybuffers.el")
+;; (global-set-key (kbd "s-`") 'mybuffers-switch)
 
 ;; undo with cmd z
-; (global-set-key "s-z" 'undo-tree-undo)
-(global-set-key (kbd "S-s-z") 'undo-tree-redo)
-
+(global-undo-tree-mode 1)
+(global-set-key (kbd "s-z") 'undo-tree-undo)
+(global-set-key (kbd "s-Z") 'undo-tree-redo)
 
 ;; move to end of line with cmd-right
-(global-set-key (kbd "s-<right>") 'move-end-of-line)
+;; (global-set-key (kbd "s-<right>") 'move-end-of-line)
 ;; move to begginging of line with cmd-left
-(global-set-key (kbd "s-<left>") 'move-beginning-of-line)
+;; (global-set-key (kbd "s-<left>") 'move-beginning-of-line)
 
 ;; kill current buffer with cmd+w
-(defun kill-current-buffer ()
-  (interactive)
-  (kill-buffer (current-buffer)))
-(global-set-key (kbd "s-w") 'kill-current-buffer)
+;; (defun kill-current-buffer ()
+ ;; (interactive)
+ ;; (kill-buffer (current-buffer)))
+;; (global-set-key (kbd "s-w") 'kill-current-buffer)
 #+END_SRC
 
 cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
@@ -51,16 +54,16 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
   (define-key global-map (kbd "s-=") 'text-scale-increase)
   (define-key global-map (kbd "s--") 'text-scale-decrease)
 #+END_SRC
-* snippets
+
+* font, font size
+
 #+BEGIN_SRC emacs-lisp
-  (require 'yasnippet)
-  (setq yas-snippet-dirs
-      '("~/.emacs.d/elpa/yasnippet-0.12.2/snippets"                 ;; personal snippets
-        "~/.emacs.d/yasnippets-latex/snippets" ;; the yasmate collection
-        ))
-  (yas-global-mode 1)
+(add-to-list 'default-frame-alist
+                       '(font . "Fira Mono-16"))
 #+END_SRC
+
 * spelling
+
 #+BEGIN_SRC emacs-lisp
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
@@ -88,6 +91,7 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
      (define-key flyspell-mouse-map [mouse-3] #'undefined)))
 #+END_SRC
+
 * emacs preferences
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "/usr/local/bin/aspell")
@@ -124,7 +128,9 @@ Move backups to a separate folder, automatically delete
   kept-old-versions 5    ; and how many of the old
   )
 #+END_SRC
+
 * helm
+
 #+BEGIN_SRC emacs-lisp
   (require 'helm)
   (require 'helm-config)
@@ -146,8 +152,10 @@ Move backups to a separate folder, automatically delete
 
   ;; limit max number of matches displayed for speed
   (setq helm-candidate-number-limit 100)
+
   ;; ignore boring files like .o and .a
   (setq helm-ff-skip-boring-files t)
+
   ;; replace locate with spotlight on Mac
   (setq helm-locate-command "mdfind -onlyin ~ -name %s %s")
   (setq helm-locate-fuzzy-match nil)
@@ -175,29 +183,35 @@ Move backups to a separate folder, automatically delete
 
   (helm-mode 1)
 #+END_SRC
+
 * evil
+
 #+BEGIN_SRC emacs-lisp
   ;; (add-to-list 'load-path "~/.emacs.d/evil")
   (require 'evil)
   (evil-mode 1)
 #+END_SRC
+
 * telephone line
+
 #+BEGIN_SRC emacs-lisp
-;; use powerline
-(require 'telephone-line-config)
+(require 'telephone-line)
+;; (require 'telephone-line-config)
 (telephone-line-evil-config)
-(setq telephone-line-lhs
-      '((evil   . (telephone-line-evil-tag-segment))
-        (accent . (telephone-line-vc-segment
-                   telephone-line-erc-modified-channels-segment
-                   telephone-line-process-segment))
-        (nil    . (telephone-line-minor-mode-segment
-                   telephone-line-buffer-segment))))
-(setq telephone-line-rhs
-      '((nil    . (telephone-line-misc-info-segment))
-        (accent . (telephone-line-major-mode-segment))
+ (setq telephone-line-lhs
+       '((evil   . (telephone-line-evil-tag-segment))
+         (accent . (telephone-line-vc-segment
+                    telephone-line-erc-modified-channels-segment
+                    telephone-line-process-segment))
+         (nil    . (telephone-line-minor-mode-segment
+                    telephone-line-buffer-segment))))
+ (setq telephone-line-rhs
+       '((nil    . (telephone-line-misc-info-segment))
+         (accent . (telephone-line-major-mode-segment))
         (evil   . (telephone-line-airline-position-segment))))
-(telephone-line-mode 1)
+(setq telephone-line-subseparator-faces '())
+(setq telephone-line-height 20)
+(telephone-line-mode t)
 #+END_SRC
 
 * org mode
@@ -216,18 +230,19 @@ downward pointing arrow instead of ellipsis
   (setq org-ellipsis "\u2935")
 #+END_SRC
 
-Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
+Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put tags right next to TODO
 #+BEGIN_SRC emacs-lisp
 (setq org-tag-alist '((:startgroup . nil)
-                      ("@fusion" . ?f) ("@home" . ?h)
-                      ("@out" . ?o)
+                      ("fusion" . ?f) ("home" . ?h)
+                      ("out" . ?o)
                       (:endgroup . nil)
                       (:startgroup . nil)
                       ("shallow" . ?s) ("deep" . ?d)
                       (:endgroup . nil)))
+(setq org-tags-column 0)
 (setq org-todo-keywords
   '((sequence "TODO(t)" "|" "DONE(d!)")
-    (sequence "WAITING(w@/!)")
+    (sequence "|" "WAITING(w@/!)")
     (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
 
@@ -237,25 +252,18 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]]
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (ipython . t))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
   (setq org-enforce-todo-dependencies t)
   ;; (setq org-agenda-dim-blocked-tasks 'invisible)
 #+END_SRC
 
 Set archive and capture files
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list "~/Dropbox/org"))
-  (setq
-   org-archive-location '"~/Documents/todo-archive.org::datetree")
-  (setq
-   org-default-notes-file '"~Dropbox/org/inbox.org")
+  (load-library "find-lisp")
+  (add-hook 'org-agenda-mode-hook (lambda ()
+    (setq org-agenda-files
+      (find-lisp-find-files "~/Desktop" "\.org$"))
+  ))
+  (setq org-archive-location '"~/Documents/todo-archive.org::datetree")
 #+END_SRC
 
 Indent lines according to outline structure
@@ -271,42 +279,11 @@ Key bindings
   (global-set-key (kbd "\C-c b") 'org-iswitchb)
 #+END_SRC
 
-* octave
-Use octave mode for all .m files
 #+BEGIN_SRC emacs-lisp
-  (setq auto-mode-alist
-        (cons '("\\.m$" . octave-mode) auto-mode-alist))
+  (setq org-agenda-window-setup 'current-window)
 #+END_SRC
 
-turn on abbrevs, auto-fill, font locks for octave
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'octave-mode-hook
-          (lambda ()
-            (abbrev-mode 1)
-            (auto-fill-mode 1)
-            (if (eq window-system 'x)
-                (font-lock-mode 1))))
-#+END_SRC
-* ESS
-#+BEGIN_SRC emacs-lisp
-(setq ess-R-font-lock-keywords
-   '(quote
-    ((ess-R-fl-keyword:modifiers . t)
-     (ess-R-fl-keyword:fun-defs . t)
-     (ess-R-fl-keyword:keywords . t)
-     (ess-R-fl-keyword:assign-ops . t)
-     (ess-R-fl-keyword:constants . t)
-     (ess-fl-keyword:fun-calls . t)
-     (ess-fl-keyword:numbers . t)
-     (ess-fl-keyword:operators . t)
-     (ess-fl-keyword:delimiters . t)
-     (ess-fl-keyword:= . t)
-     (ess-R-fl-keyword:F&T . t)
-     (ess-R-fl-keyword:%op% . t))))
-#+END_SRC
 * set file to open at startup
 #+BEGIN_SRC emacs-lisp
-  ;; (find-file "~/Desktop/gtd/root-commitment.org")
-
   (add-hook 'after-init-hook 'org-agenda-list)
 #+END_SRC
