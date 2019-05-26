@@ -8,3 +8,5 @@ projectile-bookmarks.eld
 elpa
 network-security.data
 configuration.el
+unused.el
+sensible-defaults.el
