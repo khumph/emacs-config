@@ -1,88 +1,36 @@
-* melpa packages
+* Packages
 
 #+BEGIN_SRC emacs-lisp
-(require 'package)
-(setq package-archives
-      '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
-        ("MELPA Stable" . "https://stable.melpa.org/packages/")
-        ("MELPA"        . "https://melpa.org/packages/"))
-      package-archive-priorities
-      '(("MELPA Stable" . 10)
-        ("GNU ELPA"     . 5)
-        ("MELPA"        . 0)))
-  (package-initialize)
-  (setq package-selected-packages
-     (quote (org-bullets helm telephone-line evil)))
+  (require 'package)
+  (setq package-archives
+        '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
+          ("MELPA Stable" . "https://stable.melpa.org/packages/")
+          ("MELPA"        . "https://melpa.org/packages/"))
+        package-archive-priorities
+        '(("MELPA Stable" . 10)
+          ("GNU ELPA"     . 5)
+          ("MELPA"        . 0)))
+    (package-initialize)
+    (setq package-selected-packages
+       (quote (org-bullets helm telephone-line evil)))
 #+END_SRC
 
-* sensible defaults
+* Emacs preferences
 
+Sensible defaults
 #+BEGIN_SRC emacs-lisp
-(load-file "~/.emacs.d/sensible-defaults.el")
-(sensible-defaults/use-all-settings)
-(sensible-defaults/use-all-keybindings)
+  (load-file "~/.emacs.d/sensible-defaults.el")
+  (sensible-defaults/use-all-settings)
+  (sensible-defaults/use-all-keybindings)
 #+END_SRC
 
-* macOS-aligned key bindings
-
-Ensure command key mapped to super (s)
+Font, font size
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin")
-    (setq mac-command-modifier 'super))
+  (add-to-list 'default-frame-alist '(font . "Fira Mono-16"))
 #+END_SRC
 
-cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
+General Emacs GUI settings
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin")
-    (define-key global-map (kbd "s-0") 'sensible-defaults/reset-text-size)
-    (define-key global-map (kbd "s-=") 'text-scale-increase)
-    (define-key global-map (kbd "s--") 'text-scale-decrease))
-  (when (string-equal system-type "windows-nt")
-    (define-key global-map (kbd "C-0") 'sensible-defaults/reset-text-size)
-    (define-key global-map (kbd "C-=") 'text-scale-increase)
-    (define-key global-map (kbd "C--") 'text-scale-decrease))
-#+END_SRC
-
-* font, font size
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist
-                       '(font . "Fira Mono-16"))
-#+END_SRC
-
-* spelling
-
-#+BEGIN_SRC emacs-lisp
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
-
-(dolist (mode '(emacs-lisp-mode-hook
-                inferior-lisp-mode-hook
-                clojure-mode-hook
-                python-mode-hook
-                js-mode-hook
-                R-mode-hook))
-  (add-hook mode
-            '(lambda ()
-               (flyspell-prog-mode))))
-
-(global-set-key (kbd "<f8>") 'ispell-word)
-(defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word"
-  (interactive)
-  (flyspell-goto-next-error)
-  (ispell-word))
-(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-(eval-after-load "flyspell"
-  '(progn
-     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
-#+END_SRC
-
-* emacs preferences
-#+BEGIN_SRC emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
   ;; Wrap lines at window edge
   (global-visual-line-mode t)
 
@@ -106,29 +54,95 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
   (fringe-mode -1)
 #+END_SRC
 
-Move backups to a separate folder, automatically delete
+Set file to open at startup
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
-  backup-by-copying t    ; Don't delink hardlinks
-  version-control t      ; Use version numbers on backups
-  delete-old-versions t  ; Automatically delete excess backups
-  kept-new-versions 20   ; how many of the newest versions to keep
-  kept-old-versions 5    ; and how many of the old
-  )
+  (add-hook 'after-init-hook 'org-agenda-list)
 #+END_SRC
 
-* helm
+Move backups to a separate folder, automatically delete
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
+        backup-by-copying t    ; Don't delink hardlinks
+        version-control t      ; Use version numbers on backups
+        delete-old-versions t  ; Automatically delete excess backups
+        kept-new-versions 20   ; how many of the newest versions to keep
+        kept-old-versions 5    ; and how many of the old
+    )
+#+END_SRC
 
+
+
+** General Key bindings
+
+Ensure command key mapped to super (s)
+#+BEGIN_SRC emacs-lisp
+  (when (string-equal system-type "darwin")
+    (setq mac-command-modifier 'super))
+#+END_SRC
+
+cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
+#+BEGIN_SRC emacs-lisp
+  (when (string-equal system-type "darwin")
+    (define-key global-map (kbd "s-0") 'sensible-defaults/reset-text-size)
+    (define-key global-map (kbd "s-=") 'text-scale-increase)
+    (define-key global-map (kbd "s--") 'text-scale-decrease))
+  (when (string-equal system-type "windows-nt")
+    (define-key global-map (kbd "C-0") 'sensible-defaults/reset-text-size)
+    (define-key global-map (kbd "C-=") 'text-scale-increase)
+    (define-key global-map (kbd "C--") 'text-scale-decrease))
+#+END_SRC
+
+* Spelling
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/aspell")
+
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+
+  (dolist (mode '(emacs-lisp-mode-hook
+                  inferior-lisp-mode-hook
+                  clojure-mode-hook
+                  python-mode-hook
+                  js-mode-hook
+                  R-mode-hook))
+    (add-hook mode
+              '(lambda ()
+                 (flyspell-prog-mode))))
+
+  (global-set-key (kbd "<f8>") 'ispell-word)
+  (defun flyspell-check-next-highlighted-word ()
+    "Custom function to spell check next highlighted word"
+    (interactive)
+    (flyspell-goto-next-error)
+    (ispell-word))
+  (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
+  (eval-after-load "flyspell"
+    '(progn
+       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+       (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+#+END_SRC
+
+* Helm
+
+Enable helm
 #+BEGIN_SRC emacs-lisp
   (require 'helm)
   (require 'helm-config)
 
+  (helm-autoresize-mode 1)
+  (helm-mode 1)
+#+END_SRC
+
+Set helm key bindings
+#+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (when (string-equal system-type "windows-nt") 
+  (when (string-equal system-type "windows-nt")
     (global-set-key (kbd "C-t") 'helm-for-files))
   (when (string-equal system-type "darwin")
     (global-set-key (kbd "s-t") 'helm-for-files))
@@ -138,7 +152,10 @@ Move backups to a separate folder, automatically delete
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+#+END_SRC
 
+Other helm settings
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
   ;; limit max number of matches displayed for speed
@@ -151,35 +168,11 @@ Move backups to a separate folder, automatically delete
   (when (string-equal system-type "darwin")
     (setq helm-locate-command "mdfind -onlyin ~ -name %s %s")
     (setq helm-locate-fuzzy-match nil))
-
-  ;; (require 'helm-projectile)
-  ;; (setq helm-projectile-fuzzy-match nil)
-  ;; (projectile-global-mode)
-  ;; (setq projectile-completion-system 'helm)
-  ;; (helm-projectile-on)
-  ;; ;; enable caching so projectile can be used in a large directory
-  ;; (setq projectile-enable-caching t)
-
-  ;; (when (executable-find "curl")
-  ;;   (setq helm-google-suggest-use-curl-p t))
-  ;;  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-  ;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-  ;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-  ;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-  ;;       helm-ff-file-name-history-use-recentf t
-  ;;       helm-echo-input-in-header-line t)
-
-  ;; (setq helm-autoresize-max-height 0)
-  ;; (setq helm-autoresize-min-height 20)
-  (helm-autoresize-mode 1)
-
-  (helm-mode 1)
 #+END_SRC
 
-* evil
+* Evil
 
 #+BEGIN_SRC emacs-lisp
-  ;; (add-to-list 'load-path "~/.emacs.d/evil")
   (require 'evil)
   (evil-mode 1)
 #+END_SRC
@@ -187,70 +180,70 @@ Move backups to a separate folder, automatically delete
 * telephone line
 
 #+BEGIN_SRC emacs-lisp
-(require 'telephone-line)
-;; (require 'telephone-line-config)
-(telephone-line-evil-config)
- (setq telephone-line-lhs
-       '((evil   . (telephone-line-evil-tag-segment))
-         (accent . (telephone-line-vc-segment
-                    telephone-line-erc-modified-channels-segment
-                    telephone-line-process-segment))
-         (nil    . (telephone-line-minor-mode-segment
-                    telephone-line-buffer-segment))))
- (setq telephone-line-rhs
-       '((nil    . (telephone-line-misc-info-segment))
-         (accent . (telephone-line-major-mode-segment))
-        (evil   . (telephone-line-airline-position-segment))))
-(setq telephone-line-subseparator-faces '())
-(setq telephone-line-height 20)
-(telephone-line-mode t)
+  (require 'telephone-line)
+  (telephone-line-evil-config)
+   (setq telephone-line-lhs
+         '((evil   . (telephone-line-evil-tag-segment))
+           (accent . (telephone-line-vc-segment
+                      telephone-line-erc-modified-channels-segment
+                      telephone-line-process-segment))
+           (nil    . (telephone-line-minor-mode-segment
+                      telephone-line-buffer-segment))))
+   (setq telephone-line-rhs
+         '((nil    . (telephone-line-misc-info-segment))
+           (accent . (telephone-line-major-mode-segment))
+          (evil   . (telephone-line-airline-position-segment))))
+  (setq telephone-line-subseparator-faces '())
+  (setq telephone-line-height 20)
+  (telephone-line-mode t)
 #+END_SRC
 
-* org mode
+* Org mode
 
-Pretty bullets instead of asterisks, hide leading stars
+Org mode look and feel settings
 #+BEGIN_SRC emacs-lisp
+  ;; Use pretty bullets
   (add-hook 'org-mode-hook
-	    (lambda ()
-	      (org-bullets-mode t)))
-
+            (lambda ()
+              (org-bullets-mode t)))
+  ;; Hide leading stars
   (setq org-hide-leading-stars t)
-#+END_SRC
 
-downward pointing arrow instead of ellipsis
-#+BEGIN_SRC emacs-lisp
+  ;; Use a downward arrow instead of ellipsis
   (setq org-ellipsis "\u2935")
+
+  ;; Indent lines according to outline structure
+  (setq org-startup-indented t)
+
+  ;; Tab will indent code in org SRC blocks
+  (setq org-src-tab-acts-natively t)
 #+END_SRC
 
 Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put tags right next to TODO
 #+BEGIN_SRC emacs-lisp
-(setq org-tag-alist '((:startgroup . nil)
-                      ("fusion" . ?f) ("home" . ?h)
-                      ("out" . ?o)
-                      (:endgroup . nil)
-                      (:startgroup . nil)
-                      ("shallow" . ?s) ("deep" . ?d)
-                      (:endgroup . nil)))
-(setq org-tags-column 0)
-(setq org-todo-keywords
-  '((sequence "TODO(t)" "|" "DONE(d!)")
-    (sequence "|" "WAITING(w@/!)")
-    (sequence "|" "CANCELLED(c@)")))
+  (setq org-tag-alist '((:startgroup . nil)
+                        ("fusion" . ?f) ("home" . ?h)
+                        ("out" . ?o) ("work" . ?w)
+                        (:endgroup . nil)
+                        (:startgroup . nil)
+                        ("shallow" . ?s) ("deep" . ?d)
+                        (:endgroup . nil)))
+  (setq org-tags-column 0)
+  (setq org-todo-keywords
+    '((sequence "TODO(t)" "|" "DONE(d!)")
+      (sequence "|" "WAITING(w@/!)")
+      (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-;; (setq org-modules '(quote(org-ctags org-gnus org-habit org-checklist)))
-#+END_SRC
-
+Omit non-US Holidays
 #+BEGIN_SRC emacs-lisp
   (setq holiday-bahai-holidays nil)
   (setq holiday-hebrew-holidays nil)
   (setq holiday-islamic-holidays nil)
   (setq org-enforce-todo-dependencies t)
-  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
 #+END_SRC
 
-Set archive and capture files
+Set file locations
 #+BEGIN_SRC emacs-lisp
   (when (string-equal system-type "darwin")
     (setq org-agenda-files (list "/Users/kyle/Library/Mobile Documents/iCloud\~com\~appsonthemove\~beorg/Documents/org"))
@@ -258,19 +251,9 @@ Set archive and capture files
   (when (string-equal system-type "windows-nt")
     (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org"))
     (setq org-archive-location '"I:/archive/archive.org::datetree"))
-  ;; (load-library "find-lisp")
-  ;; (add-hook 'org-agenda-mode-hook (lambda ()
-  ;;   (setq org-agenda-files
-  ;;     (find-lisp-find-files "~/Desktop" "\.org$"))
-  ;; ))
-#+END_SRC
+  #+END_SRC
 
-Indent lines according to outline structure
-#+BEGIN_SRC emacs-lisp
-  (setq org-startup-indented t)
-#+END_SRC
-
-Key bindings
+Org mode key bindings
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "\C-c l") 'org-store-link)
   (global-set-key (kbd "\C-c a") 'org-agenda)
@@ -278,11 +261,7 @@ Key bindings
   (global-set-key (kbd "\C-c b") 'org-iswitchb)
 #+END_SRC
 
+Have org-agenda take up whole window
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-window-setup 'current-window)
-#+END_SRC
-
-* set file to open at startup
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'after-init-hook 'org-agenda-list)
 #+END_SRC
