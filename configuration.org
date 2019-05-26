@@ -25,34 +25,22 @@
 
 * macOS-aligned key bindings
 
+Ensure command key mapped to super (s)
 #+BEGIN_SRC emacs-lisp
-;; make sure command key mapped to super (s)
-(setq mac-command-modifier 'super)
-;; (load "~/.emacs.d/mybuffers.el")
-;; (global-set-key (kbd "s-`") 'mybuffers-switch)
-
-;; undo with cmd z
-(global-undo-tree-mode 1)
-(global-set-key (kbd "s-z") 'undo-tree-undo)
-(global-set-key (kbd "s-Z") 'undo-tree-redo)
-
-;; move to end of line with cmd-right
-;; (global-set-key (kbd "s-<right>") 'move-end-of-line)
-;; move to begginging of line with cmd-left
-;; (global-set-key (kbd "s-<left>") 'move-beginning-of-line)
-
-;; kill current buffer with cmd+w
-;; (defun kill-current-buffer ()
- ;; (interactive)
- ;; (kill-buffer (current-buffer)))
-;; (global-set-key (kbd "s-w") 'kill-current-buffer)
+  (when (string-equal system-type "darwin")
+    (setq mac-command-modifier 'super))
 #+END_SRC
 
 cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
 #+BEGIN_SRC emacs-lisp
-  (define-key global-map (kbd "s-0") 'sensible-defaults/reset-text-size)
-  (define-key global-map (kbd "s-=") 'text-scale-increase)
-  (define-key global-map (kbd "s--") 'text-scale-decrease)
+  (when (string-equal system-type "darwin")
+    (define-key global-map (kbd "s-0") 'sensible-defaults/reset-text-size)
+    (define-key global-map (kbd "s-=") 'text-scale-increase)
+    (define-key global-map (kbd "s--") 'text-scale-decrease))
+  (when (string-equal system-type "windows-nt")
+    (define-key global-map (kbd "C-0") 'sensible-defaults/reset-text-size)
+    (define-key global-map (kbd "C-=") 'text-scale-increase)
+    (define-key global-map (kbd "C--") 'text-scale-decrease))
 #+END_SRC
 
 * font, font size
@@ -140,7 +128,10 @@ Move backups to a separate folder, automatically delete
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "s-t") 'helm-for-files)
+  (when (string-equal system-type "windows-nt") 
+    (global-set-key (kbd "C-t") 'helm-for-files))
+  (when (string-equal system-type "darwin")
+    (global-set-key (kbd "s-t") 'helm-for-files))
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 
@@ -157,8 +148,9 @@ Move backups to a separate folder, automatically delete
   (setq helm-ff-skip-boring-files t)
 
   ;; replace locate with spotlight on Mac
-  (setq helm-locate-command "mdfind -onlyin ~ -name %s %s")
-  (setq helm-locate-fuzzy-match nil)
+  (when (string-equal system-type "darwin")
+    (setq helm-locate-command "mdfind -onlyin ~ -name %s %s")
+    (setq helm-locate-fuzzy-match nil))
 
   ;; (require 'helm-projectile)
   ;; (setq helm-projectile-fuzzy-match nil)
@@ -247,23 +239,30 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-modules
-   '(quote(org-ctags org-gnus org-habit org-checklist)))
+;; (setq org-modules '(quote(org-ctags org-gnus org-habit org-checklist)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+  (setq holiday-bahai-holidays nil)
+  (setq holiday-hebrew-holidays nil)
+  (setq holiday-islamic-holidays nil)
   (setq org-enforce-todo-dependencies t)
   ;; (setq org-agenda-dim-blocked-tasks 'invisible)
 #+END_SRC
 
 Set archive and capture files
 #+BEGIN_SRC emacs-lisp
-  (load-library "find-lisp")
-  (add-hook 'org-agenda-mode-hook (lambda ()
-    (setq org-agenda-files
-      (find-lisp-find-files "~/Desktop" "\.org$"))
-  ))
-  (setq org-archive-location '"~/Documents/todo-archive.org::datetree")
+  (when (string-equal system-type "darwin")
+    (setq org-agenda-files (list "/Users/kyle/Library/Mobile Documents/iCloud\~com\~appsonthemove\~beorg/Documents/org"))
+    (setq org-archive-location '"~/Documents/todo-archive.org::datetree"))
+  (when (string-equal system-type "windows-nt")
+    (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org"))
+    (setq org-archive-location '"I:/archive/archive.org::datetree"))
+  ;; (load-library "find-lisp")
+  ;; (add-hook 'org-agenda-mode-hook (lambda ()
+  ;;   (setq org-agenda-files
+  ;;     (find-lisp-find-files "~/Desktop" "\.org$"))
+  ;; ))
 #+END_SRC
 
 Indent lines according to outline structure
