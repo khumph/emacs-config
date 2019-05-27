@@ -12,7 +12,7 @@
           ("MELPA"        . 0)))
     (package-initialize)
     (setq package-selected-packages
-       (quote (org-bullets helm telephone-line evil)))
+       (quote (flyspell org-bullets helm telephone-line evil)))
 #+END_SRC
 
 * Emacs preferences
@@ -26,7 +26,7 @@ Sensible defaults
 
 Font, font size
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Fira Mono-16"))
+  (add-to-list 'default-frame-alist '(font . "Fira Mono-14"))
 #+END_SRC
 
 General Emacs GUI settings
@@ -54,6 +54,20 @@ General Emacs GUI settings
   (fringe-mode -1)
 #+END_SRC
 
+Make whitespace-mode use just basic coloring
+All numbers are Unicode codepoint in decimal. (insert-char 182 1)
+#+BEGIN_SRC emacs-lisp
+  (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark)))
+  (setq whitespace-display-mappings
+    '(
+      (space-mark 32 [183] [46]) ; 32 SPACE 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+      (newline-mark 10 [182 10]) ; 10 LINE FEED
+      (tab-mark 9 [9655 9] [92 9]) ; 9 TAB, 9655 WHITE RIGHT-POINTING TRIANGLE 「▷」
+    ))
+  (custom-set-faces
+    '(whitespace-space ((t (:foreground "lightgray")))))
+#+END_SRC
+
 Set file to open at startup
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook 'org-agenda-list)
@@ -70,7 +84,12 @@ Move backups to a separate folder, automatically delete
     )
 #+END_SRC
 
-
+Encoding, use hex for unicode characters
+#+BEGIN_SRC emacs-lisp
+  (setq read-quoted-char-radix '16)
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8) 
+#+END_SRC
 
 ** General Key bindings
 
@@ -89,23 +108,26 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
   (when (string-equal system-type "windows-nt")
     (define-key global-map (kbd "C-0") 'sensible-defaults/reset-text-size)
     (define-key global-map (kbd "C-=") 'text-scale-increase)
-    (define-key global-map (kbd "C--") 'text-scale-decrease))
+    (define-key global-map (kbd "C--") 'text-scale-decrease)
+    (define-key global-map (kbd "C-s") 'save-buffer))
+    (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
+    (define-key isearch-mode-map "\e" 'isearch-abort)       ;; \e seems to work better for terminals
+    (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
 #+END_SRC
 
 * Spelling
 
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
+  (when (string-equal system-type "darwin")
+    (setq ispell-program-name "/usr/local/bin/aspell"))
+  (when (string-equal system-type "windows-nt")
+    (setq ispell-program-name "C:/Users/kyleh/Documents/emacs/hunspell/bin/hunspell.exe"))
 
   (dolist (hook '(text-mode-hook))
     (add-hook hook (lambda () (flyspell-mode 1))))
 
   (dolist (mode '(emacs-lisp-mode-hook
-                  inferior-lisp-mode-hook
-                  clojure-mode-hook
-                  python-mode-hook
-                  js-mode-hook
-                  R-mode-hook))
+                  inferior-lisp-mode-hook))
     (add-hook mode
               '(lambda ()
                  (flyspell-prog-mode))))
@@ -221,17 +243,22 @@ Org mode look and feel settings
 
 Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put tags right next to TODO
 #+BEGIN_SRC emacs-lisp
-  (setq org-tag-alist '((:startgroup . nil)
-                        ("fusion" . ?f) ("home" . ?h)
-                        ("out" . ?o) ("work" . ?w)
-                        (:endgroup . nil)
-                        (:startgroup . nil)
-                        ("shallow" . ?s) ("deep" . ?d)
-                        (:endgroup . nil)))
+  (when (string-equal system-type "darwin") 
+    (setq org-tag-alist '((:startgroup . nil)
+                         ("fusion" . ?f) ("home" . ?h)
+                         ("out" . ?o) ("work" . ?w)
+                         (:endgroup . nil)
+                         (:startgroup . nil)
+                         ("shallow" . ?s) ("deep" . ?d) ("event" . ?e)
+                         (:endgroup . nil))))
+  (when (string-equal system-type "windows-nt")
+    (setq org-tag-alist '((:startgroup . nil)
+                         ("shallow" . ?s) ("deep" . ?d) ("event" . ?e)
+                         (:endgroup . nil))))
   (setq org-tags-column 0)
   (setq org-todo-keywords
     '((sequence "TODO(t)" "|" "DONE(d!)")
-      (sequence "|" "WAITING(w@/!)")
+      (sequence "|" "WAITING(w@/!)" "MAYBE(m!)")
       (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
 
@@ -240,17 +267,16 @@ Omit non-US Holidays
   (setq holiday-bahai-holidays nil)
   (setq holiday-hebrew-holidays nil)
   (setq holiday-islamic-holidays nil)
-  (setq org-enforce-todo-dependencies t)
 #+END_SRC
 
 Set file locations
 #+BEGIN_SRC emacs-lisp
   (when (string-equal system-type "darwin")
     (setq org-agenda-files (list "/Users/kyle/Library/Mobile Documents/iCloud\~com\~appsonthemove\~beorg/Documents/org"))
-    (setq org-archive-location '"~/Documents/todo-archive.org::datetree"))
+    (setq org-archive-location '"~/Documents/todo-archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
-    (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org"))
-    (setq org-archive-location '"I:/archive/archive.org::datetree"))
+    (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org" "Q:/Shared/Kyle Humphrey/AACT/"))
+    (setq org-archive-location '"I:/archive/todo-archive.org::datetree/* Archived Tasks"))
   #+END_SRC
 
 Org mode key bindings
@@ -264,4 +290,6 @@ Org mode key bindings
 Have org-agenda take up whole window
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-window-setup 'current-window)
+  (setq org-enforce-todo-dependencies t)
+  (setq org-agenda-start-with-follow-mode t)
 #+END_SRC
