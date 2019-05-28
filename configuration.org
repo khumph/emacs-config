@@ -88,7 +88,7 @@ Encoding, use hex for unicode characters
 #+BEGIN_SRC emacs-lisp
   (setq read-quoted-char-radix '16)
   (set-language-environment "UTF-8")
-  (set-default-coding-systems 'utf-8) 
+  (set-default-coding-systems 'utf-8)
 #+END_SRC
 
 ** General Key bindings
@@ -243,7 +243,7 @@ Org mode look and feel settings
 
 Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put tags right next to TODO
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin") 
+  (when (string-equal system-type "darwin")
     (setq org-tag-alist '((:startgroup . nil)
                          ("fusion" . ?f) ("home" . ?h)
                          ("out" . ?o) ("work" . ?w)
@@ -291,5 +291,7 @@ Have org-agenda take up whole window
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-window-setup 'current-window)
   (setq org-enforce-todo-dependencies t)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-start-with-follow-mode t)
 #+END_SRC
