@@ -109,6 +109,7 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
     (define-key global-map (kbd "C-0") 'sensible-defaults/reset-text-size)
     (define-key global-map (kbd "C-=") 'text-scale-increase)
     (define-key global-map (kbd "C--") 'text-scale-decrease)
+    (define-key global-map (kbd "M-<f4>") 'save-buffers-kill-emacs)
     (define-key global-map (kbd "C-s") 'save-buffer))
     (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
     (define-key isearch-mode-map "\e" 'isearch-abort)       ;; \e seems to work better for terminals
@@ -257,7 +258,7 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put
                          (:endgroup . nil))))
   (setq org-tags-column 0)
   (setq org-todo-keywords
-    '((sequence "TODO(t)" "|" "DONE(d!)")
+    '((sequence "TODO(t)" "|" "DONE(d)")
       (sequence "|" "WAITING(w@/!)" "MAYBE(m!)")
       (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
@@ -276,7 +277,7 @@ Set file locations
     (setq org-archive-location '"~/Documents/todo-archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
     (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org" "Q:/Shared/Kyle Humphrey/AACT/"))
-    (setq org-archive-location '"I:/archive/todo-archive.org::datetree/* Archived Tasks"))
+    (setq org-archive-location '"I:/archive/org-archive/%s_archive::datetree/* Archived Tasks"))
   #+END_SRC
 
 Org mode key bindings
@@ -291,7 +292,10 @@ Have org-agenda take up whole window
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-window-setup 'current-window)
   (setq org-enforce-todo-dependencies t)
+  (setq org-enforce-todo-checkbox-dependencies t)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-show-future-repeats 'next)
   (setq org-agenda-start-with-follow-mode t)
+  (setq org-log-done 'time)
 #+END_SRC
