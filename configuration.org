@@ -273,8 +273,8 @@ Omit non-US Holidays
 Set file locations
 #+BEGIN_SRC emacs-lisp
   (when (string-equal system-type "darwin")
-    (setq org-agenda-files (list "/Users/kyle/Library/Mobile Documents/iCloud\~com\~appsonthemove\~beorg/Documents/org"))
-    (setq org-archive-location '"~/Documents/todo-archive.org::datetree/* Archived Tasks"))
+    (setq org-agenda-files (list "~/Desktop/org"))
+    (setq org-archive-location '"~/Documents/org-archive/%s_archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
     (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org" "Q:/Shared/Kyle Humphrey/AACT/"))
     (setq org-archive-location '"I:/archive/org-archive/%s_archive::datetree/* Archived Tasks"))
