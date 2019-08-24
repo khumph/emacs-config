@@ -298,4 +298,5 @@ Have org-agenda take up whole window
   (setq org-agenda-show-future-repeats 'next)
   (setq org-agenda-start-with-follow-mode t)
   (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
 #+END_SRC
