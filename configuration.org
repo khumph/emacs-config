@@ -259,7 +259,7 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put
   (setq org-tags-column 0)
   (setq org-todo-keywords
     '((sequence "TODO(t)" "|" "DONE(d)")
-      (sequence "WAITING(w@/!)" "MAYBE(m!)")
+      (sequence "WAITING(w@/!)" "MAYBE(m!)" "|")
       (sequence "|" "CANCELLED(c@)")))
 #+END_SRC
 
