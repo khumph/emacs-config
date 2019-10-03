@@ -26,7 +26,10 @@ Sensible defaults
 
 Font, font size
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Fira Mono-14"))
+  (when (string-equal system-type "darwin")
+    (add-to-list 'default-frame-alist '(font . "Fira Sans-14")))
+  (when (string-equal system-type "windows-nt")
+    (add-to-list 'default-frame-alist '(font . "Consolas-14")))
 #+END_SRC
 
 General Emacs GUI settings
@@ -276,8 +279,8 @@ Set file locations
     (setq org-agenda-files (list "~/Desktop/org"))
     (setq org-archive-location '"~/Documents/org-archive/%s_archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
-    (setq org-agenda-files (list "Q:/Shared/Kyle Humphrey/org" "Q:/Shared/Kyle Humphrey/AACT/"))
-    (setq org-archive-location '"I:/archive/org-archive/%s_archive::datetree/* Archived Tasks"))
+(setq org-agenda-files (list "C:/Users/kyleh/org"))
+    (setq org-archive-location '"C:/Users/kyleh/org-archive/%s_archive::datetree/* Archived Tasks"))
   #+END_SRC
 
 Org mode key bindings
