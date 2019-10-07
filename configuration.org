@@ -249,14 +249,16 @@ Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put
 #+BEGIN_SRC emacs-lisp
   (when (string-equal system-type "darwin")
     (setq org-tag-alist '((:startgroup . nil)
-                         ("fusion" . ?f) ("home" . ?h)
-                         ("out" . ?o) ("work" . ?w)
+                         ("fusion" . ?f) ("home" . ?h) ("out" . ?o) ("work" . ?w)
                          (:endgroup . nil)
                          (:startgroup . nil)
                          ("shallow" . ?s) ("deep" . ?d) ("event" . ?e)
                          (:endgroup . nil))))
   (when (string-equal system-type "windows-nt")
     (setq org-tag-alist '((:startgroup . nil)
+                         ("home" . ?h) ("out" . ?o) ("work" . ?w)
+                         (:endgroup . nil)
+                         (:startgroup . nil)
                          ("shallow" . ?s) ("deep" . ?d) ("event" . ?e)
                          (:endgroup . nil))))
   (setq org-tags-column 0)
@@ -279,7 +281,7 @@ Set file locations
     (setq org-agenda-files (list "~/Desktop/org"))
     (setq org-archive-location '"~/Documents/org-archive/%s_archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
-(setq org-agenda-files (list "C:/Users/kyleh/org"))
+(setq org-agenda-files (list "C:/Users/kyleh/org" "C:/Users/kyleh/org-pers"))
     (setq org-archive-location '"C:/Users/kyleh/org-archive/%s_archive::datetree/* Archived Tasks"))
   #+END_SRC
 
