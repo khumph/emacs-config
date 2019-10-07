@@ -27,7 +27,7 @@ Sensible defaults
 Font, font size
 #+BEGIN_SRC emacs-lisp
   (when (string-equal system-type "darwin")
-    (add-to-list 'default-frame-alist '(font . "Fira Sans-14")))
+    (add-to-list 'default-frame-alist '(font . "Fira Mono-14")))
   (when (string-equal system-type "windows-nt")
     (add-to-list 'default-frame-alist '(font . "Consolas-14")))
 #+END_SRC
@@ -295,6 +295,7 @@ Org mode key bindings
 
 Have org-agenda take up whole window
 #+BEGIN_SRC emacs-lisp
+  (load-file "~/.emacs.d/org-checklist.el")
   (setq org-agenda-window-setup 'current-window)
   (setq org-enforce-todo-dependencies t)
   (setq org-enforce-todo-checkbox-dependencies t)

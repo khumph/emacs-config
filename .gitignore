@@ -10,3 +10,4 @@ network-security.data
 configuration.el
 unused.el
 sensible-defaults.el
+org-checklist.el
