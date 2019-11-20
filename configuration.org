@@ -198,9 +198,20 @@ Other helm settings
 
 * Evil
 
+Use evil
 #+BEGIN_SRC emacs-lisp
   (require 'evil)
   (evil-mode 1)
+#+END_SRC
+
+Define C-u as up
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-insert-state-map (kbd "C-u")
+    (lambda ()
+      (interactive)
+      (evil-delete (point-at-bol) (point))))
 #+END_SRC
 
 * telephone line
