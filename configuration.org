@@ -171,6 +171,7 @@ Set helm key bindings
   (when (string-equal system-type "windows-nt")
     (global-set-key (kbd "C-x C-b") 'helm-for-files))
   (when (string-equal system-type "darwin")
+    (global-set-key (kbd "C-x C-b") 'helm-for-files)
     (global-set-key (kbd "s-t") 'helm-for-files))
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
