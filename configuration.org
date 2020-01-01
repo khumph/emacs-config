@@ -122,7 +122,7 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
 * Spelling
 
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin")
+  (when (or (string-equal system-type "darwin") (string-equal system-type "gnu/linux"))
     (setq ispell-program-name "/usr/local/bin/aspell"))
   (when (string-equal system-type "windows-nt")
     (setq ispell-program-name "C:/Users/kyleh/Documents/emacs/hunspell/bin/hunspell.exe"))
@@ -168,7 +168,7 @@ Set helm key bindings
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (when (string-equal system-type "windows-nt")
+  (when (or (string-equal system-type "windows-nt") (string-equal system-type "gnu/linux"))
     (global-set-key (kbd "C-x C-b") 'helm-for-files))
   (when (string-equal system-type "darwin")
     (global-set-key (kbd "C-x C-b") 'helm-for-files)
@@ -178,7 +178,7 @@ Set helm key bindings
 
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
-  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 #+END_SRC
 
 Other helm settings
@@ -259,7 +259,7 @@ Org mode look and feel settings
 
 Todo words, set default [[https://orgmode.org/org.html#Setting-tags][tags]], put tags right next to TODO
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin")
+  (when (or (string-equal system-type "darwin") (string-equal system-type "gnu/linux"))
     (setq org-tag-alist '((:startgroup . nil)
                          ("fusion" . ?f) ("home" . ?h) ("out" . ?o) ("work" . ?w)
                          (:endgroup . nil)
@@ -289,7 +289,7 @@ Omit non-US Holidays
 
 Set file locations
 #+BEGIN_SRC emacs-lisp
-  (when (string-equal system-type "darwin")
+  (when (or (string-equal system-type "darwin") (string-equal system-type "gnu/linux"))
     (setq org-agenda-files (list "~/Dropbox/org"))
     (setq org-archive-location '"~/Documents/org-archive/%s_archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
