@@ -122,8 +122,10 @@ cmd-= increases text size, cmd-- decreases cmd-0 sets it back to original size
 * Spelling
 
 #+BEGIN_SRC emacs-lisp
-  (when (or (string-equal system-type "darwin") (string-equal system-type "gnu/linux"))
+  (when (string-equal system-type "darwin")
     (setq ispell-program-name "/usr/local/bin/aspell"))
+  (when (string-equal system-type "gnu/linux")
+    (setq ispell-program-name "/usr/bin/aspell"))
   (when (string-equal system-type "windows-nt")
     (setq ispell-program-name "C:/Users/kyleh/Documents/emacs/hunspell/bin/hunspell.exe"))
 
