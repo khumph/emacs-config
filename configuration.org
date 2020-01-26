@@ -292,8 +292,8 @@ Set file locations
     (setq org-agenda-files (list "~/Desktop/org"))
     (setq org-archive-location '"~/Documents/org-archive/%s_archive.org::datetree/* Archived Tasks"))
   (when (string-equal system-type "windows-nt")
-(setq org-agenda-files (list "C:/Users/kyleh/org" "C:/Users/kyleh/org-pers"))
-    (setq org-archive-location '"C:/Users/kyleh/org-archive/%s_archive::datetree/* Archived Tasks"))
+    (setq org-agenda-files (list "C:/Users/kyleh/org"))
+    (setq org-archive-location '"C:/Users/kyleh/org/archive/a-%s::datetree/* Archived Tasks"))
   #+END_SRC
 
 Org mode key bindings
