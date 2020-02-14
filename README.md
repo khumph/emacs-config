@@ -2,11 +2,11 @@ This repository houses my emacs configuration files. I pretty much only use Emac
 
 Everything you would need to recreate my configuration is here (provided you install the necessary Emacs packages) except for [sensible-defaults.el](https://github.com/hrs/sensible-defaults.el) and [org-checklist.el](https://github.com/yyr/org-mode/blob/master/contrib/lisp/org-checklist.el) which need to be added to your .emacs.d directory along with the files in this repository.
 
-To run on windows, I place the following `.emacs` file in `C:\Users\%USERNAME%\AppData\Roaming` to point to the appropriate files:
+To run on Microsoft Windows, I place the following `.emacs` file in `C:\Users\%USERNAME%\AppData\Roaming` to point to the appropriate files:
 ```elisp
-(setq user-init-file "C:/path/to/init.el")
-(setq user-emacs-directory "C:/path/to/.emacs.d/")
-(setq default-directory "C:/whatever/you/want/to/start/in")
-(setenv "HOME" "D:/my/home/directory")
+(setenv "HOME" (substitute-in-file-name "C:/Users/$USERNAME"))
+(setq user-init-file (substitute-in-file-name "$HOME/.emacs.d/init.el"))
+(setq user-emacs-directory (substitute-in-file-name "$HOME/.emacs.d"))
+(setq default-directory (substitute-in-file-name "$HOME")) ; Directory to start in
 (load user-init-file)
 ```
