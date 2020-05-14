@@ -4,7 +4,7 @@ Everything you would need to recreate my configuration is here (provided you ins
 
 To run on Microsoft Windows, I place the following `.emacs` file in `C:\Users\%USERNAME%\AppData\Roaming` to point to the appropriate files:
 ```elisp
-(setenv "HOME" (substitute-in-file-name "C:/Users/$USERNAME"))
+(setenv "HOME" (substitute-in-file-name "$USERPROFILE"))
 (setq user-init-file (substitute-in-file-name "$HOME/.emacs.d/init.el"))
 (setq user-emacs-directory (substitute-in-file-name "$HOME/.emacs.d"))
 (setq default-directory (substitute-in-file-name "$HOME")) ; Directory to start in
